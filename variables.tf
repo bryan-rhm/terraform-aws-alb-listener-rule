@@ -58,3 +58,11 @@ variable "http_headers" {
     values = list(string)
   }))
 }
+
+
+
+variable "oidc_config" {
+  description = "Open ID Connect Configuration"
+  type = object
+  default = null
+}

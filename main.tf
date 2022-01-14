@@ -20,6 +20,22 @@ resource "aws_lb_listener_rule" "this" {
     }
   }
 
+  dynamic "action" {
+    for_each = var.oidc_config != null ? [1] : []
+    content {
+      type = "authenticate-oidc"    
+      authenticate_oidc {
+        authorization_endpoint = var.oidc_config.authorization_endpoint
+        client_id              = var.oidc_config.client_id
+        client_secret          = var.oidc_config.client_secret
+        issuer                 = var.oidc_config.issuer
+        token_endpoint         = var.oidc_config.token_endpoint
+        user_info_endpoint     = var.oidc_config.user_info_endpoint
+      }
+    }
+  }
+
+
   dynamic "condition" {
     for_each = length(var.host_header) > 0 ? [1] : []
     content {
