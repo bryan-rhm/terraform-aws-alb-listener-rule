@@ -63,6 +63,13 @@ variable "http_headers" {
 
 variable "oidc_config" {
   description = "Open ID Connect Configuration"
-  type = object
+  type = object({
+    authorization_endpoint = string
+    client_id              = string
+    client_secret          = string
+    issuer                 = string
+    token_endpoint         = string
+    user_info_endpoint     = string
+  })
   default = null
 }
