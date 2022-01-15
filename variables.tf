@@ -59,8 +59,6 @@ variable "http_headers" {
   }))
 }
 
-
-
 variable "oidc_config" {
   description = "Open ID Connect Configuration"
   type = object({
