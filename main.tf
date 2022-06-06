@@ -2,6 +2,21 @@ resource "aws_lb_listener_rule" "this" {
   listener_arn = var.listener_arn
   priority     = var.priority
 
+  dynamic "action" {
+    for_each = var.oidc_config != null ? [1] : []
+    content {
+      type = "authenticate-oidc"
+      authenticate_oidc {
+        authorization_endpoint = var.oidc_config.authorization_endpoint
+        client_id              = var.oidc_config.client_id
+        client_secret          = var.oidc_config.client_secret
+        issuer                 = var.oidc_config.issuer
+        token_endpoint         = var.oidc_config.token_endpoint
+        user_info_endpoint     = var.oidc_config.user_info_endpoint
+      }
+    }
+  }
+
   action {
     type             = "forward"
     target_group_arn = length(var.target_groups) == 1 ? var.target_groups[0].arn : null
@@ -13,18 +28,9 @@ resource "aws_lb_listener_rule" "this" {
           for_each = var.target_groups
           content {
             arn    = target_group.value.arn
-            weight = try(target_group.value.weight, null)
+            weight = target_group.value.weight
           }
         }
-      }
-    }
-  }
-
-  dynamic "condition" {
-    for_each = length(var.host_header) > 0 ? [1] : []
-    content {
-      host_header {
-        values = var.host_header
       }
     }
   }
@@ -34,6 +40,15 @@ resource "aws_lb_listener_rule" "this" {
     content {
       path_pattern {
         values = var.path_pattern
+      }
+    }
+  }
+
+  dynamic "condition" {
+    for_each = length(var.host_header) > 0 ? [1] : []
+    content {
+      host_header {
+        values = var.host_header
       }
     }
   }
