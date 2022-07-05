@@ -68,7 +68,7 @@ variable "oidc_config" {
     issuer                 = string
     token_endpoint         = string
     user_info_endpoint     = string
-    scope                  = optional(list(string)) # The set of user claims to be requested from the IdP.
+    scope                  = optional(string) # The set of user claims to be requested from the IdP.
   })
   default = null
 }
