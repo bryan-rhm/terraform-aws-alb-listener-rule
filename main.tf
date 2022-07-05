@@ -13,6 +13,7 @@ resource "aws_lb_listener_rule" "this" {
         issuer                 = var.oidc_config.issuer
         token_endpoint         = var.oidc_config.token_endpoint
         user_info_endpoint     = var.oidc_config.user_info_endpoint
+        scope                  = try(var.oidc_config.scope,null)
       }
     }
   }
